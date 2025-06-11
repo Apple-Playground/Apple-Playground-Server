@@ -237,19 +237,6 @@ CREATE TABLE users (
 3. **환경 변수 오류**
    - GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET 설정 확인
 
-## 📝 추가 개발 가능 기능
-
-- [ ] JWT 토큰 기반 인증
-- [ ] 사용자 프로필 편집
-- [ ] GitHub 리포지토리 연동
-- [ ] 관리자 페이지
-- [x] **API 문서화 (Swagger)**
-- [ ] 소셜 로그인 확장 (Google, Naver 등)
-- [ ] 사용자 활동 로그
-- [ ] 이메일 인증
-- [ ] API Rate Limiting
-- [ ] 데이터 억세스 로그
-
 ## 🤝 기여하기
 
 1. Fork the Project
