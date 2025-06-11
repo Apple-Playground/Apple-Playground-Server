@@ -51,6 +51,35 @@ public class User {
     @Column
     private String blog;
     
+    // 추가된 연락처 정보
+    @Column
+    private String phoneNumber;
+    
+    @Column
+    private String contact1;
+    
+    @Column
+    private String contact2;
+    
+    @Column
+    private String contact3;
+    
+    @Column
+    private String contact4;
+    
+    @Column
+    private String linkedinUrl;
+    
+    @Column
+    private String githubProfileUrl;
+    
+    // 팔로우 관련 캐시 컬럼
+    @Column
+    private Integer followersCount = 0;
+    
+    @Column
+    private Integer followingCount = 0;
+    
     @Column
     private Integer publicRepos;
     
@@ -85,5 +114,37 @@ public class User {
         this.publicRepos = publicRepos;
         this.followers = followers;
         this.following = following;
+    }
+    
+    public void updateContactInfo(String phoneNumber, String contact1, String contact2, 
+                                 String contact3, String contact4, String linkedinUrl, 
+                                 String githubProfileUrl) {
+        this.phoneNumber = phoneNumber;
+        this.contact1 = contact1;
+        this.contact2 = contact2;
+        this.contact3 = contact3;
+        this.contact4 = contact4;
+        this.linkedinUrl = linkedinUrl;
+        this.githubProfileUrl = githubProfileUrl;
+    }
+    
+    public void incrementFollowersCount() {
+        this.followersCount++;
+    }
+    
+    public void decrementFollowersCount() {
+        if (this.followersCount > 0) {
+            this.followersCount--;
+        }
+    }
+    
+    public void incrementFollowingCount() {
+        this.followingCount++;
+    }
+    
+    public void decrementFollowingCount() {
+        if (this.followingCount > 0) {
+            this.followingCount--;
+        }
     }
 }

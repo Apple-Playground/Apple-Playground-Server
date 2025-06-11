@@ -37,12 +37,25 @@ spring:
       host: ${REDIS_HOST:localhost}
       password: ${REDIS_PASSWORD:}
       port: ${REDIS_PORT:6379}
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+# AWS S3 설정
+aws:
+  s3:
+    access-key: ${AWS_S3_ACCESS_KEY}
+    secret-key: ${AWS_S3_SECRET_KEY}
+    bucket-name: ${AWS_S3_BUCKET_NAME}
+    region: ${AWS_S3_REGION:ap-northeast-2}
 
 logging:
   level:
     com.apple.appleplayground: DEBUG
     org.springframework.security: DEBUG
     org.springframework.web: DEBUG
+    software.amazon.awssdk: INFO
 
 springdoc:
   api-docs:
@@ -68,6 +81,15 @@ springdoc:
     - group: auth
       display-name: "인증 API"
       paths-to-match: "/api/auth/**"
+    - group: follow
+      display-name: "팔로우 API"
+      paths-to-match: "/api/follow/**"
+    - group: blog
+      display-name: "블로그 API"
+      paths-to-match: "/api/blog/**"
+    - group: image
+      display-name: "이미지 API"
+      paths-to-match: "/api/images/**"
     - group: public
       display-name: "공개 API"
       paths-to-match: "/api/public/**"
