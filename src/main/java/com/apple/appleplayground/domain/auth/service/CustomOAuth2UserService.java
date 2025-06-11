@@ -2,21 +2,19 @@ package com.apple.appleplayground.domain.auth.service;
 
 import com.apple.appleplayground.domain.auth.client.GitHubApiClient;
 import com.apple.appleplayground.domain.auth.dto.GitHubUserDto;
+import com.apple.appleplayground.domain.auth.dto.UserPrincipal;
 import com.apple.appleplayground.domain.auth.entity.Role;
 import com.apple.appleplayground.domain.auth.entity.User;
 import com.apple.appleplayground.domain.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.Map;
 
 @Slf4j
@@ -69,12 +67,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             // 사용자 정보 저장 또는 업데이트
             User user = saveOrUpdateUser(githubUserDto);
             
-            // CustomOAuth2User 반환
-            return new DefaultOAuth2User(
-                    Collections.singleton(new SimpleGrantedAuthority("ROLE_" + user.getRole().name())),
-                    createAttributes(user, oauth2User.getAttributes()),
-                    "id"
-            );
+            // UserPrincipal 반환
+            return UserPrincipal.create(user, createAttributes(user, oauth2User.getAttributes()));
             
         } catch (Exception e) {
             log.error("Error during GitHub OAuth2 authentication", e);
