@@ -1,4 +1,4 @@
-package com.apple.appleplayground.domain.auth.client;
+package com.apple.appleplayground.global.external;
 
 import com.apple.appleplayground.domain.auth.dto.GitHubUserDto;
 import org.springframework.cloud.openfeign.FeignClient;

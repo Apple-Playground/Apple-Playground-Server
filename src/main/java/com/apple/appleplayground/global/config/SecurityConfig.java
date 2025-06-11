@@ -1,4 +1,4 @@
-package com.apple.appleplayground.config;
+package com.apple.appleplayground.global.config;
 
 import com.apple.appleplayground.domain.auth.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;

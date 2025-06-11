@@ -1,6 +1,6 @@
 package com.apple.appleplayground.domain.auth.service;
 
-import com.apple.appleplayground.domain.auth.client.GitHubApiClient;
+import com.apple.appleplayground.global.external.GitHubApiClient;
 import com.apple.appleplayground.domain.auth.dto.GitHubUserDto;
 import com.apple.appleplayground.domain.auth.dto.UserPrincipal;
 import com.apple.appleplayground.domain.auth.entity.Role;

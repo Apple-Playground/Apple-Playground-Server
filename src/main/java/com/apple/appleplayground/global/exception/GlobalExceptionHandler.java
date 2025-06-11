@@ -1,4 +1,4 @@
-package com.apple.appleplayground.exception;
+package com.apple.appleplayground.global.exception;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.ConstraintViolation;
