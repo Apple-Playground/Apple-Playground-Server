@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -118,39 +117,6 @@ public class ImageService {
     }
     
     /**
-     * Pre-signed URL 생성 (클라이언트 직접 업로드용)
-     */
-    @Transactional
-    public String generateUploadUrl(Long userId, String originalFileName, String contentType) {
-        User user = findUserById(userId);
-        
-        // 파일 확장자 검증
-        if (!isValidImageContentType(contentType)) {
-            throw new IllegalArgumentException("지원하지 않는 이미지 형식입니다.");
-        }
-        
-        String fileExtension = getFileExtensionFromContentType(contentType);
-        String uniqueFileName = generateUniqueFileName(userId, fileExtension);
-        
-        // 15분 후 만료되는 업로드 URL 생성
-        String presignedUrl = awsS3Service.generatePresignedUploadUrl(uniqueFileName, Duration.ofMinutes(15));
-        
-        // 메타데이터만 미리 저장 (업로드 완료 후 업데이트)
-        Image image = Image.create(
-                uniqueFileName,
-                "", // URL은 업로드 완료 후 업데이트
-                0L, // 크기는 업로드 완료 후 업데이트
-                contentType,
-                user
-        );
-        
-        imageRepository.save(image);
-        log.info("Generated presigned upload URL for user {}: {}", userId, uniqueFileName);
-        
-        return presignedUrl;
-    }
-    
-    /**
      * 이미지 정보 조회
      */
     public ImageResponse getImage(Long imageId) {
@@ -196,14 +162,6 @@ public class ImageService {
     }
     
     /**
-     * 임시 다운로드 URL 생성
-     */
-    public String generateDownloadUrl(Long imageId, Duration expiration) {
-        Image image = findImageById(imageId);
-        return awsS3Service.generatePresignedDownloadUrl(image.getFileName(), expiration);
-    }
-    
-    /**
      * 이미지 파일 검증
      */
     private void validateImageFile(MultipartFile file) {
@@ -243,19 +201,6 @@ public class ImageService {
             return "";
         }
         return fileName.substring(fileName.lastIndexOf('.'));
-    }
-    
-    /**
-     * 컨텐츠 타입에서 파일 확장자 추출
-     */
-    private String getFileExtensionFromContentType(String contentType) {
-        return switch (contentType) {
-            case "image/jpeg" -> ".jpg";
-            case "image/png" -> ".png";
-            case "image/gif" -> ".gif";
-            case "image/webp" -> ".webp";
-            default -> "";
-        };
     }
     
     /**

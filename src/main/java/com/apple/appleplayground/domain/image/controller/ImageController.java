@@ -17,7 +17,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -51,22 +50,6 @@ public class ImageController {
                 });
     }
     
-    @Operation(summary = "Pre-signed URL 생성", description = "클라이언트가 직접 S3에 업로드할 수 있는 임시 URL을 생성합니다.")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Pre-signed URL 생성 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 파일 형식"),
-        @ApiResponse(responseCode = "401", description = "인증되지 않은 사용자")
-    })
-    @PostMapping("/presigned-url")
-    public ResponseEntity<String> generateUploadUrl(
-            @Parameter(description = "원본 파일명") @RequestParam String fileName,
-            @Parameter(description = "파일 MIME 타입") @RequestParam String contentType,
-            @AuthenticationPrincipal UserPrincipal currentUser) {
-        
-        String presignedUrl = imageService.generateUploadUrl(currentUser.getId(), fileName, contentType);
-        return ResponseEntity.ok(presignedUrl);
-    }
-    
     @Operation(summary = "이미지 정보 조회", description = "지정된 ID의 이미지 정보를 조회합니다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "이미지 조회 성공"),
@@ -78,20 +61,6 @@ public class ImageController {
         
         ImageResponse response = imageService.getImage(imageId);
         return ResponseEntity.ok(response);
-    }
-    
-    @Operation(summary = "임시 다운로드 URL 생성", description = "이미지의 임시 다운로드 URL을 생성합니다.")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "다운로드 URL 생성 성공"),
-        @ApiResponse(responseCode = "404", description = "존재하지 않는 이미지")
-    })
-    @GetMapping("/{imageId}/download-url")
-    public ResponseEntity<String> generateDownloadUrl(
-            @Parameter(description = "이미지 ID") @PathVariable Long imageId,
-            @Parameter(description = "만료 시간(분)") @RequestParam(defaultValue = "60") int expirationMinutes) {
-        
-        String downloadUrl = imageService.generateDownloadUrl(imageId, Duration.ofMinutes(expirationMinutes));
-        return ResponseEntity.ok(downloadUrl);
     }
     
     @Operation(summary = "사용자 이미지 목록 조회", description = "지정된 사용자가 업로드한 이미지 목록을 조회합니다.")

@@ -10,11 +10,6 @@ import software.amazon.awssdk.core.async.AsyncRequestBody;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
-import software.amazon.awssdk.services.s3.presigner.S3Presigner;
-import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
-import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
-import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
-import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -118,54 +113,6 @@ public class AwsS3Service {
                 throw new RuntimeException("파일 삭제에 실패했습니다.", e);
             }
         });
-    }
-    
-    /**
-     * Pre-signed URL 생성 (임시 업로드 URL)
-     */
-    public String generatePresignedUploadUrl(String fileName, Duration expiration) {
-        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                .bucket(bucketName)
-                .key(fileName)
-                .build();
-        
-        S3Presigner presigner = S3Presigner.create();
-        
-        PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
-                .signatureDuration(expiration)
-                .putObjectRequest(putObjectRequest)
-                .build();
-        
-        PresignedPutObjectRequest presignedRequest = presigner.presignPutObject(presignRequest);
-        
-        String presignedUrl = presignedRequest.url().toString();
-        log.info("Generated presigned upload URL for file: {} (expires in {})", fileName, expiration);
-        
-        presigner.close();
-        return presignedUrl;
-    }
-    
-    /**
-     * Pre-signed URL 생성 (임시 다운로드 URL)
-     */
-    public String generatePresignedDownloadUrl(String fileName, Duration expiration) {
-        GetObjectRequest getObjectRequest = GetObjectRequest.builder()
-                .bucket(bucketName)
-                .key(fileName)
-                .build();
-        
-        S3Presigner presigner = S3Presigner.create();
-        
-        GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
-                .signatureDuration(expiration)
-                .getObjectRequest(getObjectRequest)
-                .build();
-        
-        PresignedGetObjectRequest presignedRequest = presigner.presignGetObject(presignRequest);
-        
-        String presignedUrl = presignedRequest.url().toString();
-        presigner.close();
-        return presignedUrl;
     }
     
     /**
