@@ -36,10 +36,11 @@ dependencies {
 	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
-	// AWS SDK for S3
-	implementation("software.amazon.awssdk:s3:2.20.26")
-	implementation("software.amazon.awssdk:sts:2.20.26")
-	implementation("software.amazon.awssdk:s3-presigner:2.20.26")
+	// AWS SDK for S3 (최신 버전)
+	implementation(platform("software.amazon.awssdk:bom:2.21.29"))
+	implementation("software.amazon.awssdk:s3")
+	implementation("software.amazon.awssdk:sts")
+	implementation("software.amazon.awssdk:url-connection-client")
 	// 비동기 처리
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
 	compileOnly("org.projectlombok:lombok")
