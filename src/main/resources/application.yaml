@@ -27,28 +27,62 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        # 성능 최적화 설정
+        jdbc:
+          batch_size: 50                    # 배치 사이즈 증가
+          fetch_size: 100                   # 페치 사이즈 증가
+        connection:
+          provider_disables_autocommit: true  # 자동 커밋 비활성화
+        query:
+          plan_cache_max_size: 2048         # 쿼리 실행 계획 캐시 크기
   datasource:
     url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_SCHEMA:appleplayground}
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:password}
     driver-class-name: com.mysql.cj.jdbc.Driver
+    # HikariCP 성능 최적화
+    hikari:
+      maximum-pool-size: 20              # 커넥션 풀 최대 크기
+      minimum-idle: 5                    # 최소 유휴 커넥션
+      connection-timeout: 20000          # 커넥션 타임아웃 (20초)
+      idle-timeout: 300000               # 유휴 타임아웃 (5분)
+      max-lifetime: 1200000              # 커넥션 최대 생존 시간 (20분)
+      leak-detection-threshold: 60000    # 리크 감지 임계값 (1분)
   data:
     redis:
       host: ${REDIS_HOST:localhost}
       password: ${REDIS_PASSWORD:}
       port: ${REDIS_PORT:6379}
+      # Redis 성능 최적화
+      lettuce:
+        pool:
+          max-active: 20                 # 최대 활성 커넥션
+          max-idle: 10                   # 최대 유휴 커넥션
+          min-idle: 2                    # 최소 유휴 커넥션
+          max-wait: 2000ms               # 최대 대기 시간
+      timeout: 3000ms                    # 커넥션 타임아웃
   servlet:
     multipart:
-      max-file-size: 50MB
-      max-request-size: 50MB
+      max-file-size: 100MB               # 최대 파일 크기 증가
+      max-request-size: 100MB            # 최대 요청 크기 증가
+      file-size-threshold: 10MB          # 메모리 임계값 증가
 
-# AWS S3 설정
+# AWS S3 고성능 설정
 aws:
   s3:
     access-key: ${AWS_S3_ACCESS_KEY}
     secret-key: ${AWS_S3_SECRET_KEY}
     bucket-name: ${AWS_S3_BUCKET_NAME}
     region: ${AWS_S3_REGION:ap-northeast-2}
+    # 성능 최적화 옵션
+    multipart:
+      threshold: 50MB                    # 멀티파트 업로드 임계값
+      part-size: 10MB                    # 파트 크기
+      max-parts: 1000                    # 최대 파트 수
+    presigned-url:
+      expiration: 15                     # Pre-signed URL 만료 시간 (분)
+    transfer:
+      max-concurrency: 10                # 최대 동시 전송 수
 
 logging:
   level:
