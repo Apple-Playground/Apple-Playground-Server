@@ -21,22 +21,16 @@ public class AsyncConfig {
     @Bean(name = "fileUploadExecutor")
     public Executor fileUploadExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        
-        // CPU 코어 수에 따른 동적 설정
         int coreCount = Runtime.getRuntime().availableProcessors();
-        executor.setCorePoolSize(coreCount);                    // CPU 코어 수
-        executor.setMaxPoolSize(coreCount * 3);                 // 최대 스레드 = 코어 수 * 3
-        executor.setQueueCapacity(500);                         // 대기열 크기 증가
-        
+        executor.setCorePoolSize(coreCount);
+        executor.setMaxPoolSize(coreCount * 3);
+        executor.setQueueCapacity(500);
         executor.setThreadNamePrefix("S3Upload-");
-        executor.setKeepAliveSeconds(120);                      // 유휴 스레드 생존 시간 증가
-        executor.setAllowCoreThreadTimeOut(true);               // 코어 스레드 타임아웃 허용
+        executor.setKeepAliveSeconds(120);
+        executor.setAllowCoreThreadTimeOut(true);
         executor.setWaitForTasksToCompleteOnShutdown(true);
-        executor.setAwaitTerminationSeconds(60);                // 종료 대기 시간 증가
-        
-        // 거부 정책: 대기열이 가득 차면 호출자 스레드에서 직접 실행
+        executor.setAwaitTerminationSeconds(60);
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
-        
         executor.initialize();
         return executor;
     }
@@ -47,22 +41,16 @@ public class AsyncConfig {
     @Bean(name = "asyncExecutor")
     public Executor asyncExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        
-        // CPU 코어 수에 따른 동적 설정
         int coreCount = Runtime.getRuntime().availableProcessors();
-        executor.setCorePoolSize(coreCount * 2);                // I/O 작업이 많으므로 코어 수 * 2
-        executor.setMaxPoolSize(coreCount * 4);                 // 최대 스레드 = 코어 수 * 4
-        executor.setQueueCapacity(1000);                        // 대기열 크기 증가
-        
+        executor.setCorePoolSize(coreCount * 2);
+        executor.setMaxPoolSize(coreCount * 4);
+        executor.setQueueCapacity(1000);
         executor.setThreadNamePrefix("Async-");
-        executor.setKeepAliveSeconds(180);                      // 유휴 스레드 생존 시간
-        executor.setAllowCoreThreadTimeOut(true);               // 코어 스레드 타임아웃 허용
+        executor.setKeepAliveSeconds(180);
+        executor.setAllowCoreThreadTimeOut(true);
         executor.setWaitForTasksToCompleteOnShutdown(true);
         executor.setAwaitTerminationSeconds(60);
-        
-        // 거부 정책: 대기열이 가득 차면 호출자 스레드에서 직접 실행
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
-        
         executor.initialize();
         return executor;
     }
